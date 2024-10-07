@@ -1,0 +1,467 @@
+<html><head><base href="https://recordatoriodigital.app/">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RECORDATORIO DIGITAL</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #1c2331, #24344d);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  header {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 20px 0;
+    text-align: center;
+    position: relative;
+  }
+  h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    color: #4CAF50;
+  }
+  #currentDateTime {
+    font-size: 1rem;
+    color: #4CAF50;
+    margin-top: 10px;
+  }
+  h2 {
+    font-size: 1.2rem;
+    margin: 15px 0 5px;
+    color: #4CAF50;
+  }
+  #loginForm, #taskForm, #viewTasksButton, #taskList {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+  }
+  input, button, select {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0 10px;
+    border: none;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  button {
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  button:hover {
+    background-color: #45a049;
+  }
+  .task {
+    background-color: rgba(255, 255, 255, 0.1);
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .task-buttons {
+    display: flex;
+    gap: 5px;
+  }
+  .wave {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%230099ff" fill-opacity="0.2" d="M0,32L48,37.3C96,43,192,53,288,80C384,107,480,149,576,154.7C672,160,768,128,864,117.3C960,107,1056,117,1152,122.7C1248,128,1344,128,1392,128L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+    background-size: 1440px 100px;
+    animation: wave 10s linear infinite;
+    z-index: -1;
+  }
+  .wave:nth-child(2) {
+    bottom: 10px;
+    opacity: 0.5;
+    animation: wave 7s linear infinite;
+  }
+  .wave:nth-child(3) {
+    bottom: 20px;
+    opacity: 0.2;
+    animation: wave 5s linear infinite;
+  }
+  @keyframes wave {
+    0% { background-position-x: 0; }
+    100% { background-position-x: 1440px; }
+  }
+  #backToLoginBtn {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 10px;
+    width: 100%;
+    max-width: 200px;
+    display: none;
+  }
+  #backToLoginBtn:hover {
+    background-color: #d32f2f;
+  }
+  #infoBtn {
+    background-color: #2196F3;
+  }
+  #infoBtn:hover {
+    background-color: #1976D2;
+  }
+  #buttonContainer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+  #infoModal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+  }
+  .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 8px;
+    color: #333;
+  }
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  @media (max-width: 600px) {
+    .container {
+      padding: 10px;
+    }
+    h1 {
+      font-size: 2rem;
+    }
+    #backToLoginBtn {
+      font-size: 0.9rem;
+      padding: 8px;
+    }
+    #buttonContainer {
+      flex-direction: column;
+    }
+    #backToLoginBtn {
+      max-width: 100%;
+      margin-top: 5px;
+    }
+  }
+  #exitAppBtn {
+    background-color: #ff0000; /* Vivid red color */
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 10px;
+    width: 100%;
+  }
+  #exitAppBtn:hover {
+    background-color: #cc0000; /* Darker red for hover effect */
+  }
+</style>
+</head>
+<body>
+<div class="wave"></div>
+<div class="wave"></div>
+<div class="wave"></div>
+
+<div class="container">
+  <header>
+    <h1>RECORDATORIO DIGITAL</h1>
+    <div id="currentDateTime"></div>
+    <div id="buttonContainer">
+      <button id="backToLoginBtn" onclick="backToLogin()">Cerrar Sesión</button>
+    </div>
+  </header>
+
+  <div id="loginForm">
+    <input type="text" id="username" placeholder="Nombre de usuario" required>
+    <input type="password" id="password" placeholder="Contraseña" required>
+    <button onclick="login()">Iniciar sesión</button>
+    <button id="infoBtn" onclick="showInfo()">Infórmate</button>
+    <button id="exitAppBtn" onclick="exitApp()">Salir de la Aplicación</button>
+  </div>
+
+  <div id="taskForm" style="display:none;">
+    <input type="text" id="taskInput" placeholder="Nueva tarea">
+    <h2>Hora</h2>
+    <input type="time" id="taskTime" step="60">
+    <h2>Fecha</h2>
+    <input type="date" id="taskDate">
+    <h2>Sonido</h2>
+    <input type="file" id="musicInput" accept="audio/*">
+    <button onclick="addTask()">Agregar tarea</button>
+  </div>
+
+  <div id="viewTasksButton" style="display:none;">
+    <button onclick="viewTasks()">Ver mis tareas</button>
+  </div>
+
+  <div id="taskList" style="display:none;"></div>
+</div>
+
+<div id="infoModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeInfo()">&times;</span>
+    <h2>Guía de RECORDATORIO DIGITAL</h2>
+    <p>Bienvenido a RECORDATORIO DIGITAL, una aplicación diseñada para ayudarte a organizar tus tareas y recordatorios de manera eficiente.</p>
+    <h3>Funcionalidades principales:</h3>
+    <ul>
+      <li>Crear y gestionar tareas con fecha y hora específicas</li>
+      <li>Asociar sonidos personalizados a tus recordatorios</li>
+      <li>Visualizar tus tareas pendientes</li>
+      <li>Eliminar tareas completadas</li>
+    </ul>
+    <h3>Cómo usar la aplicación:</h3>
+    <ol>
+      <li>Inicia sesión con tu nombre de usuario y contraseña</li>
+      <li>Agrega nuevas tareas utilizando el formulario proporcionado</li>
+      <li>Visualiza tus tareas haciendo clic en "Ver mis tareas"</li>
+      <li>Gestiona tus tareas: reproduce alarmas, elimina tareas completadas</li>
+      <li>Cierra sesión cuando hayas terminado</li>
+    </ol>
+    <p>RECORDATORIO DIGITAL está diseñado para ser intuitivo y fácil de usar, ayudándote a mantener tu vida organizada y productiva.</p>
+    <h3>Información del creador:</h3>
+    <p><strong>Creador:</strong> Tarciano ENZEMA NCHAMA</p>
+    <p><strong>Contactos:</strong> +240 222 084 663 / +240 222896 448</p>
+    <p><strong>Email:</strong> enzemajr@gmail.com</p>
+    <p><strong>Muchas gracias por usar nuestra App.</strong></p>
+  </div>
+</div>
+
+<script>
+let tasks = [];
+let audio = new Audio();
+let currentUser = null;
+
+function formatDate(date) {
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  return date.toLocaleDateString('es-ES', options);
+}
+
+function login() {
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  if (username && password) {
+    currentUser = username;
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('taskForm').style.display = 'block';
+    document.getElementById('viewTasksButton').style.display = 'block';
+    document.getElementById('backToLoginBtn').style.display = 'block';
+    document.getElementById('exitAppBtn').style.display = 'block';
+    loadTasks();
+  } else {
+    alert('Por favor, ingrese nombre de usuario y contraseña.');
+  }
+}
+
+function addTask() {
+  const taskInput = document.getElementById('taskInput');
+  const taskTime = document.getElementById('taskTime');
+  const taskDate = document.getElementById('taskDate');
+  const musicInput = document.getElementById('musicInput');
+
+  if (taskInput.value && taskTime.value && taskDate.value) {
+    const taskDateObj = new Date(taskDate.value);
+    const formattedDate = formatDate(taskDateObj);
+    const task = {
+      text: taskInput.value,
+      time: taskTime.value,
+      date: formattedDate,
+      music: musicInput.files[0] ? URL.createObjectURL(musicInput.files[0]) : null,
+      user: currentUser
+    };
+    tasks.push(task);
+    saveTasks();
+    alert('Tarea agregada correctamente');
+    taskInput.value = '';
+    taskTime.value = '';
+    taskDate.value = '';
+    musicInput.value = '';
+    document.getElementById('taskList').style.display = 'none';
+  } else {
+    alert('Por favor, complete todos los campos de la tarea.');
+  }
+}
+
+function renderTasks() {
+  const taskList = document.getElementById('taskList');
+  taskList.innerHTML = '';
+  tasks.forEach((task, index) => {
+    if (task.user === currentUser) {
+      const taskElement = document.createElement('div');
+      taskElement.className = 'task';
+      taskElement.innerHTML = `
+        <span>${task.text} - ${task.date} ${task.time}</span>
+        <div class="task-buttons">
+          <button onclick="removeTask(${index})">Eliminar</button>
+          ${task.music ? `<button onclick="playMusic(${index})">Reproducir</button>` : ''}
+          ${task.music ? `<button onclick="pauseMusic()">Pausar</button>` : ''}
+          ${task.music ? `<button onclick="stopMusic()">Detener</button>` : ''}
+        </div>
+      `;
+      taskList.appendChild(taskElement);
+    }
+  });
+}
+
+function removeTask(index) {
+  tasks.splice(index, 1);
+  saveTasks();
+  renderTasks();
+}
+
+function playMusic(index) {
+  const task = tasks[index];
+  if (task.music) {
+    audio.src = task.music;
+    audio.play();
+  }
+}
+
+function pauseMusic() {
+  audio.pause();
+}
+
+function stopMusic() {
+  audio.pause();
+  audio.currentTime = 0;
+}
+
+function saveTasks() {
+  localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
+function loadTasks() {
+  const savedTasks = localStorage.getItem('tasks');
+  if (savedTasks) {
+    tasks = JSON.parse(savedTasks);
+  }
+}
+
+function viewTasks() {
+  alert('Consultando tareas del usuario: ' + currentUser);
+  console.log('SELECT * FROM tareas WHERE usuario = ?', [currentUser]);
+  
+  const userTasks = tasks.filter(task => task.user === currentUser);
+  
+  const taskList = document.getElementById('taskList');
+  taskList.innerHTML = '';
+  userTasks.forEach((task, index) => {
+    const taskElement = document.createElement('div');
+    taskElement.className = 'task';
+    taskElement.innerHTML = `
+      <span>${task.text} - ${task.date} ${task.time}</span>
+      <div class="task-buttons">
+        <button onclick="removeTask(${index})">Eliminar</button>
+        ${task.music ? `<button onclick="playMusic(${index})">Reproducir</button>` : ''}
+        ${task.music ? `<button onclick="pauseMusic()">Pausar</button>` : ''}
+        ${task.music ? `<button onclick="stopMusic()">Detener</button>` : ''}
+      </div>
+    `;
+    taskList.appendChild(taskElement);
+  });
+  
+  taskList.style.display = 'block';
+}
+
+function backToLogin() {
+  currentUser = null;
+  document.getElementById('loginForm').style.display = 'block';
+  document.getElementById('taskForm').style.display = 'none';
+  document.getElementById('viewTasksButton').style.display = 'none';
+  document.getElementById('taskList').style.display = 'none';
+  document.getElementById('backToLoginBtn').style.display = 'none';
+  document.getElementById('exitAppBtn').style.display = 'block';
+  document.getElementById('username').value = '';
+  document.getElementById('password').value = '';
+}
+
+function exitApp() {
+  if (confirm('¿Está seguro que desea salir de la aplicación?')) {
+    window.close();
+    alert('Gracias por usar RECORDATORIO DIGITAL. ¡Hasta pronto!');
+  }
+}
+
+function showInfo() {
+  document.getElementById('infoModal').style.display = 'block';
+}
+
+function closeInfo() {
+  document.getElementById('infoModal').style.display = 'none';
+}
+
+function updateDateTime() {
+  const now = new Date();
+  const daysOfWeek = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+  const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+  
+  const dayOfWeek = daysOfWeek[now.getDay()];
+  const dayOfMonth = now.getDate();
+  const month = months[now.getMonth()];
+  const year = now.getFullYear();
+  const hours = now.getHours().toString().padStart(2, '0');
+  const minutes = now.getMinutes().toString().padStart(2, '0');
+  const seconds = now.getSeconds().toString().padStart(2, '0');
+
+  const dateTimeString = `${dayOfWeek}, ${dayOfMonth} de ${month} de ${year} - ${hours}:${minutes}:${seconds}`;
+  
+  document.getElementById('currentDateTime').textContent = dateTimeString;
+}
+
+// Update the date and time every second
+setInterval(updateDateTime, 1000);
+
+// Call the function once to set the initial value
+window.onload = function() {
+  updateDateTime();
+};
+
+window.onclick = function(event) {
+  let modal = document.getElementById('infoModal');
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+</script>
+</body>
+</html>
